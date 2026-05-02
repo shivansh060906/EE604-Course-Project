@@ -1,1 +1,5 @@
-# Course_-Project_EE_604
+# Abstract
+
+This project implements a computational video processing technique to reveal and magnify subtle, imperceptible motions in standard video sequences. The core of this work is the phase-based approach to motion magnification, which leverages the properties of complex steerable pyramids. Input video frames are transformed into multi-scale, multiorientation representation, allowing for the isolation of local phase information. Temporal variations in this phase data, which directly correspond to motion, are then temporally bandpass filtered to isolate specific frequencies of interest (e.g., a pulse or a vibration). The phase variations within this band are then amplified by a specified factor. To preserve video quality and prevent artifacts, the processing is applied selectively, often to the luminance (Y) channel of the YIQ colorspace, and may incorporate amplitude-weighted blurring and adaptive magnification to manage noise and large motions.
+
+The final video is reconstructed from the modified phase information, resulting in a sequence in which the targeted subtle motions are exaggerated and made clearly visible.
