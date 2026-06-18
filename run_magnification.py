@@ -33,7 +33,7 @@ ap.add_argument("-mm", "--mag_mode", type=str, default="global",
 ap.add_argument("-sc", "--spatial_chunks", type=int, default=1,
                 help="Number of spatial chunks to process for saving memory. (e.g., 10)")
 
-if _name_ == '_main_':
+if __name__ == '_main_':
 
     print(f"[INFO] Script started. Using device: {DEVICE}")
     args = vars(ap.parse_args())

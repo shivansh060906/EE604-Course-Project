@@ -3,8 +3,7 @@ import cv2
 import torch
 import torch.nn.functional as F
 from self_pyramid_utils import build_level, \
-                         build_level_batch, \
-                         recon_level_batch
+                         recon_level
 
 
 class PhaseBased():
@@ -94,12 +93,12 @@ class PhaseBased():
             idx2 = level + self.batch_size
             filter_batch = filters_tensor[idx1:idx2]
 
-            ref_pyr = build_level_batch(
+            ref_pyr = build_level(
                 video_dft[self.ref_idx, :, :].unsqueeze(0), filter_batch)
             ref_phase = torch.angle(ref_pyr)
 
             for vid_idx in range(num_frames):
-                curr_pyr = build_level_batch(
+                curr_pyr = build_level(
                     video_dft[vid_idx, :, :].unsqueeze(0), filter_batch)
                 _delta = torch.angle(curr_pyr) - ref_phase
                 phase_deltas[:, vid_idx, :, :] = ((torch.pi + _delta) \
@@ -133,7 +132,7 @@ class PhaseBased():
             ## Apply Motion Magnifications
             for vid_idx in range(num_frames):
                 vid_dft = video_dft[vid_idx, :, :].unsqueeze(0)
-                curr_pyr = build_level_batch(vid_dft, filter_batch)
+                curr_pyr = build_level(vid_dft, filter_batch)
                 delta = phase_deltas[:, vid_idx, :, :].unsqueeze(1)
 
                 # --- Amplitude-Weighted Blurring ---
@@ -159,7 +158,7 @@ class PhaseBased():
 
                 # --- Apply Amplified Phase ---
                 curr_pyr = curr_pyr * torch.exp(1.0j*modifed_phase)
-                recon_dft[vid_idx, :, :] += recon_level_batch(curr_pyr, filter_batch).sum(dim=0)
+                recon_dft[vid_idx, :, :] += recon_level(curr_pyr, filter_batch).sum(dim=0)
 
             # --- Free memory after each level ---
             del phase_deltas

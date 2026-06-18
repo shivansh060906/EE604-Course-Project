@@ -1,7 +1,6 @@
 import numpy as np
 import torch
 
-## ==========================================================================================
 """Below function outputs a polar grid, which maps each x,y to r,theta polar coordinates"""
 def get_polar_grid(h, w):
     h2 = h//2

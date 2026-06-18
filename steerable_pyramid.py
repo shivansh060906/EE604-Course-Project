@@ -1,48 +1,11 @@
-"""
- Regular, Complex, and Sub-octave Complex Steerable Pyramids
-
- To Do: 
-    - Write detailed tutorial of background and code
-
-
- Sources:
-    Papers: 
-        - http://people.csail.mit.edu/nwadhwa/phase-video/phase-video.pdf
-        - https://www.cns.nyu.edu/pub/eero/simoncelli95b.pdf
-        - http://www.cns.nyu.edu/pub/eero/portilla99-reprint.pdf
-    Code: 
-        - http://people.csail.mit.edu/nwadhwa/phase-video/
-        - https://github.com/LabForComputationalVision/matlabPyrTools
-        - https://github.com/LabForComputationalVision/pyrtools
-    Misc:
-        - https://rafat.github.io/sites/wavebook/advanced/steer.html
-        - http://www.cns.nyu.edu/~eero/steerpyr/
-        - https://www.cns.nyu.edu/pub/lcv/simoncelli90.pdf
-        - http://www.cns.nyu.edu/~eero/imrep-course/Slides/07-multiScale.pdf
-"""
-
 import numpy as np
 from scipy.special import factorial
 import matplotlib.pyplot as plt
 from self_pyramid_utils import *
 
-
 ## Steerable Pyramid Base class
 class SteerablePyramid():
     def __init__(self, depth, orientations, filters_per_octave=1, twidth=1, complex_pyr=False):
-        """ 
-            depth - Pyramid Depth (height) of Pyramid Decomposition
-            orientations - number of orientations (number of bands)
-            filters_per_octave - Nubmer of Filters in a single Octave
-            twidth - transition width between Low and High Pass Filters (controls abruptness of the falloff)  
-            complex_pyr - determines whether to create a Complex Pyramid
-
-            Recommended inputs:
-             - Single Octave BW --> default args
-             - Half Octave BW --> filters_per_octave=2, twidth=0.5
-                - A smaller twdith (transition region) appears to provide 
-                  a better reconstructon error.
-        """
         # max_depth = int(np.floor(np.log2(np.min(np.array(image.shape)))) - 2)
         self.depth = depth  
         self.orientations = orientations
@@ -292,11 +255,6 @@ class SteerablePyramid():
 
 
     def display(self, filters, title=""):
-        """ Displays all Pyramid Filters except for Hi and Lo pass masks 
-            Inputs:
-                filters - cropped filters list or pyramid list
-                title - title for figure
-            """
         fig, ax = plt.subplots(self.num_filts, self.orientations, figsize=(30, 20))
         fig.suptitle(title, size=22)
 
@@ -312,9 +270,6 @@ class SteerablePyramid():
         return fig, ax
     
 
-## ==========================================================================================
-## Sub Octave Smooth window Pyramid class
-    
 class SuboctaveSP(SteerablePyramid):
     def __init__(self, depth, orientations, filters_per_octave, cos_order=6, complex_pyr=True):
         """ 
