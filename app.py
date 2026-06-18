@@ -6,12 +6,12 @@ import torch
 
 # --- Page config ---
 st.set_page_config(
-    page_title="MotionMag: Phase-Based Motion Magnification",
+    page_title="MotionMag — Phase-Based Motion Magnification",
     page_icon="🔬",
     layout="centered",
 )
 
-st.title("MotionMag")
+st.title("🔬 MotionMag")
 st.caption("Phase-based video motion magnification · EE604 Project")
 
 st.markdown(
@@ -21,7 +21,7 @@ st.markdown(
 
 # --- Sidebar: parameters ---
 with st.sidebar:
-    st.header("Parameters")
+    st.header("⚙️ Parameters")
 
     phase_mag = st.slider("Magnification factor (α)", 1.0, 100.0, 25.0, 1.0,
                           help="How much to amplify the detected motion.")
@@ -61,7 +61,7 @@ with st.sidebar:
     reference_index = st.number_input("Reference frame index", 0, 500, 0, 1)
 
     st.divider()
-    device_label = "GPU (CUDA)" if torch.cuda.is_available() else "CPU"
+    device_label = "🟢 GPU (CUDA)" if torch.cuda.is_available() else "🔵 CPU"
     st.caption(f"Device: **{device_label}**")
 
 # --- Main: upload & run ---
@@ -69,6 +69,49 @@ uploaded = st.file_uploader(
     "Upload a video", type=["mp4", "avi", "mov", "mkv"],
     help="Short clips (5–15 s) work best. Longer videos need more RAM/VRAM."
 )
+
+# --- Demo videos ---
+st.markdown("---")
+st.subheader("Demo Results")
+st.caption("Original vs. magnified — side by side.")
+
+DEMOS = [
+    {
+        "label": "Eye Twitching",
+        "description": "Description of demo 1.",
+        "original": "static/Eye.mp4",
+        "amplified": "static/Eye.wmv",
+    },
+    {
+        "label": "Patient Breathing",
+        "description": "Description of demo 2.",
+        "original": "static/Face.mp4",
+        "amplified": "static/Face.wmv",
+    },
+    {
+        "label": "Wrist Pulse",
+        "description": "Description of demo 3.",
+        "original": "static/Wrist.mp4",
+        "amplified": "static/Wrist.wmv",
+    },
+]
+
+for demo in DEMOS:
+    st.markdown(f"#### {demo['label']}")
+    col_orig, col_amp = st.columns(2)
+    with col_orig:
+        st.markdown("**Original**")
+        if os.path.exists(demo["original"]):
+            st.video(demo["original"])
+        else:
+            st.info("Video coming soon.")
+    with col_amp:
+        st.markdown("**Magnified**")
+        if os.path.exists(demo["amplified"]):
+            st.video(demo["amplified"])
+        else:
+            st.info("Video coming soon.")
+    st.markdown("---")
 
 if uploaded:
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -141,12 +184,12 @@ if uploaded:
                 st.error("Processing failed. Check the log above for details.")
             elif os.path.exists(output_path):
                 progress.progress(100, text="Done!")
-                st.success("Magnification complete!")
+                st.success("✅ Magnification complete!")
                 st.subheader("Magnified video")
                 st.video(output_path)
                 with open(output_path, "rb") as f:
                     st.download_button(
-                        "Download magnified video",
+                        "⬇ Download magnified video",
                         f,
                         file_name=out_name,
                         mime="video/mp4",
@@ -157,9 +200,9 @@ if uploaded:
                 if candidates:
                     out_found = os.path.join(tmpdir, candidates[0])
                     progress.progress(100, text="Done!")
-                    st.success("Done!")
+                    st.success("✅ Done!")
                     st.video(out_found)
                     with open(out_found, "rb") as f:
-                        st.download_button("Download", f, file_name=candidates[0], mime="video/mp4")
+                        st.download_button("⬇ Download", f, file_name=candidates[0], mime="video/mp4")
                 else:
                     st.error("Output file not found. Check the log.")
