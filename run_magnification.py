@@ -33,7 +33,7 @@ ap.add_argument("-mm", "--mag_mode", type=str, default="global",
 ap.add_argument("-sc", "--spatial_chunks", type=int, default=1,
                 help="Number of spatial chunks to process for saving memory. (e.g., 10)")
 
-if __name__ == '_main_':
+if __name__ == '__main__':
 
     print(f"[INFO] Script started. Using device: {DEVICE}")
     args = vars(ap.parse_args())
@@ -194,7 +194,7 @@ if __name__ == '_main_':
 
     print(f"[INFO] Processing complete. 'output' tensor is on {output.device}.")
     print(f"[INFO] Initializing video writer for saving...")
-    out = cv2.VideoWriter(video_save, cv2.VideoWriter_fourcc(*'MP4V'),
+    out = cv2.VideoWriter(video_save, cv2.VideoWriter_fourcc(*'avc1'),
                           int(np.round(video_fs)),
                           (int(w / args["scale_factor"]), int(h / args["scale_factor"])))
 

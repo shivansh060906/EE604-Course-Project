@@ -8,7 +8,7 @@ from self_pyramid_utils import build_level, \
 
 class PhaseBased():
 
-    def _init_(self,
+    def __init__(self,
                  sigma,
                  transfer_function,
                  phase_mag,

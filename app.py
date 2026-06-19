@@ -70,49 +70,6 @@ uploaded = st.file_uploader(
     help="Short clips (5–15 s) work best. Longer videos need more RAM/VRAM."
 )
 
-# --- Demo videos ---
-st.markdown("---")
-st.subheader("Demo Results")
-st.caption("Original vs. magnified — side by side.")
-
-DEMOS = [
-    {
-        "label": "Eye Twitching",
-        "description": "Description of demo 1.",
-        "original": "static/Eye.mp4",
-        "amplified": "static/Eye.wmv",
-    },
-    {
-        "label": "Patient Breathing",
-        "description": "Description of demo 2.",
-        "original": "static/Face.mp4",
-        "amplified": "static/Face.wmv",
-    },
-    {
-        "label": "Wrist Pulse",
-        "description": "Description of demo 3.",
-        "original": "static/Wrist.mp4",
-        "amplified": "static/Wrist.wmv",
-    },
-]
-
-for demo in DEMOS:
-    st.markdown(f"#### {demo['label']}")
-    col_orig, col_amp = st.columns(2)
-    with col_orig:
-        st.markdown("**Original**")
-        if os.path.exists(demo["original"]):
-            st.video(demo["original"])
-        else:
-            st.info("Video coming soon.")
-    with col_amp:
-        st.markdown("**Magnified**")
-        if os.path.exists(demo["amplified"]):
-            st.video(demo["amplified"])
-        else:
-            st.info("Video coming soon.")
-    st.markdown("---")
-
 if uploaded:
     with tempfile.TemporaryDirectory() as tmpdir:
         input_path = os.path.join(tmpdir, uploaded.name)
@@ -180,27 +137,28 @@ if uploaded:
 
                 proc.wait()
 
+            st.code("\n".join(log_lines), language="")
+
             if proc.returncode != 0:
-                st.error("Processing failed. Check the log above for details.")
+                st.error(f"Process exited with code {proc.returncode}. See log above.")
             elif os.path.exists(output_path):
                 progress.progress(100, text="Done!")
-                st.success("✅ Magnification complete!")
+                st.success("Magnification complete!")
                 st.subheader("Magnified video")
                 st.video(output_path)
                 with open(output_path, "rb") as f:
                     st.download_button(
-                        "⬇ Download magnified video",
+                        "Download magnified video",
                         f,
                         file_name=out_name,
                         mime="video/mp4",
                     )
             else:
-                # Find any mp4 in tmpdir
                 candidates = [x for x in os.listdir(tmpdir) if x.endswith(".mp4") and x != uploaded.name]
                 if candidates:
                     out_found = os.path.join(tmpdir, candidates[0])
                     progress.progress(100, text="Done!")
-                    st.success("✅ Done!")
+                    st.success("Done!")
                     st.video(out_found)
                     with open(out_found, "rb") as f:
                         st.download_button("⬇ Download", f, file_name=candidates[0], mime="video/mp4")
